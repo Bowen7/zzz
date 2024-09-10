@@ -1,5 +1,6 @@
 import { Buffer } from 'node:buffer'
 import process from 'node:process'
+import { peerSchema } from '@/lib/share'
 import { createOpenAI } from '@ai-sdk/openai'
 import { createClient } from '@deepgram/sdk'
 import { type CoreMessage, generateObject } from 'ai'
@@ -51,15 +52,15 @@ const transcribe = async (blob: Blob) => {
   const arrayBuffer = await blob.arrayBuffer()
   const buffer = Buffer.from(arrayBuffer)
 
-  const { result } = await deepgram.listen.prerecorded.transcribeFile(
-    buffer,
-    {
-      model: 'whisper-large',
-      language: 'en',
-      smart_format: true,
-    },
-  )
   try {
+    const { result } = await deepgram.listen.prerecorded.transcribeFile(
+      buffer,
+      {
+        model: 'whisper',
+        language: 'en',
+        smart_format: true,
+      },
+    )
     return result?.results.channels[0].alternatives[0].transcript
   } catch {
     return ''
@@ -77,15 +78,14 @@ export const POST = async (req: Request) => {
 
   const { object } = await generateObject({
     model: groq('llama3-groq-8b-8192-tool-use-preview'),
-    schema: z.object({
-      ok: z.boolean(),
-      suggestion: z.string(),
-      content: z.string(),
-    }),
+    schema: peerSchema,
     messages: [INITIAL_MESSAGE, ...messages, {
       role: 'user',
       content: text,
     }],
   })
-  return NextResponse.json(object)
+  return NextResponse.json({
+    text,
+    peer: object,
+  })
 }
