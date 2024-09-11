@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { AudioPlayer, AudioVisualizer, useAudioPlayer, useEdgeSpeech } from '@lobehub/tts/react'
-import type { Message } from '@/lib/share'
+import type { Message } from '@/lib/types'
 
 type Props = {
   message: Message
@@ -30,7 +30,7 @@ const AssistantMessage = ({ content }: { content: string }) => {
   return <div>{content}</div>
 }
 
-export const MessageItem = ({ message }: Props) => {
+export const RoleMessage = ({ message }: Props) => {
   const { role } = message
   return role === 'user'
     ? <UserMessage content={message.content} url={message.url} />

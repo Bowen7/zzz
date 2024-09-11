@@ -1,16 +1,15 @@
 'use client'
-import { MessageItem } from '@/components/message-item'
+import { Content } from '@/components/content'
+import { DeleteDialog } from '@/components/delete-dialog'
+import { Header } from '@/components/header'
 import { Mic } from '@/components/mic'
-import { peerSchema } from '@/lib/share'
+import { RoleMessage } from '@/components/role-message'
+import { Sidebar } from '@/components/sidebar'
+import { useChat, useChats, useSelect } from '@/lib/hooks'
+import { peerSchema, responseSchema } from '@/lib/schema'
 import { nanoid } from 'nanoid'
 import { useCallback, useState } from 'react'
-import z from 'zod'
-import type { Message } from '@/lib/share'
-
-const schema = z.object({
-  text: z.string(),
-  peer: peerSchema,
-})
+import type { Message } from '@/lib/types'
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([{
@@ -19,6 +18,11 @@ export default function Home() {
     content: 'Hello',
     url: 'https://gw.alipayobjects.com/os/kitchen/lnOJK2yZ0K/sound.mp3',
   }])
+
+  const chats = useChats()
+  const { selected, onSelect } = useSelect(chats ?? [])
+  const chat = useChat(selected)
+
   const onSubmit = useCallback(async (url: string, blob: Blob) => {
     const formData = new FormData()
     formData.append('input', blob, 'audio.mp3')
@@ -27,7 +31,7 @@ export default function Home() {
       body: formData,
     })
     const data = await response.json()
-    const parsed = schema.safeParse(data)
+    const parsed = responseSchema.safeParse(data)
     if (parsed.success) {
       const { peer, text } = parsed.data
       const { ok, content, suggestion } = peer
@@ -40,12 +44,18 @@ export default function Home() {
       }
     }
   }, [])
+
   return (
-    <div className="h-screen font-[family-name:var(--font-geist-sans)]">
-      <Mic onSubmit={onSubmit} />
+    <div className="h-screen overflow-hidden flex font-[family-name:var(--font-geist-sans)]">
+      {/* <Mic onSubmit={onSubmit} />
       {messages.map(message => (
-        <MessageItem key={message.id} message={message} />
-      ))}
+        <RoleMessage key={message.id} message={message} />
+      ))} */}
+      <Sidebar selected={selected} chats={chats} onSelect={onSelect} />
+      <div className="flex-1 flex flex-col">
+        <Header chat={chat} />
+        <Content />
+      </div>
     </div>
   )
 }

@@ -1,11 +1,3 @@
-import { z } from 'zod'
-
-export const peerSchema = z.object({
-  ok: z.boolean(),
-  suggestion: z.string(),
-  content: z.string(),
-})
-
 export type Message = {
   id: string
   role: 'user'
@@ -16,4 +8,11 @@ export type Message = {
   role: 'assistant'
   content: string
   suggestion: string
+}
+
+export type Chat = {
+  id: number
+  title: string
+  updated: Date
+  messages: Message[]
 }
