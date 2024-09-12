@@ -71,6 +71,9 @@ importers:
       react:
         specifier: ^18
         version: 18.3.1
+      react-audio-visualize:
+        specifier: ^1.2.0
+        version: 1.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-dom:
         specifier: ^18
         version: 18.3.1(react@18.3.1)
@@ -80,6 +83,9 @@ importers:
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.10)
+      vmsg:
+        specifier: ^0.4.0
+        version: 0.4.0
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -120,6 +126,9 @@ importers:
       tailwindcss:
         specifier: ^3.4.1
         version: 3.4.10
+      tailwindcss-safe-area:
+        specifier: ^0.6.0
+        version: 0.6.0(tailwindcss@3.4.10)
       typescript:
         specifier: ^5
         version: 5.5.4
@@ -3622,6 +3631,12 @@ packages:
       react: ^16.13.1 || ^17.0.0 || ^18.0.0
       react-dom: ^16.13.1 || ^17.0.0 || ^18.0.0
 
+  react-audio-visualize@1.2.0:
+    resolution: {integrity: sha512-rfO5nmT0fp23gjU0y2WQT6+ZOq2ZsuPTMphchwX1PCz1Di4oaIr6x7JZII8MLrbHdG7UB0OHfGONTIsWdh67kQ==}
+    peerDependencies:
+      react: '>=16.2.0'
+      react-dom: '>=16.2.0'
+
   react-avatar-editor@13.0.2:
     resolution: {integrity: sha512-a4ajbi7lwDh98kgEtSEeKMu0vs0CHTczkq4Xcxr1EiwMFH1GlgHCEtwGU8q/H5W8SeLnH4KPK8LUjEEaZXklxQ==}
     peerDependencies:
@@ -4054,6 +4069,12 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
 
+  tailwindcss-safe-area@0.6.0:
+    resolution: {integrity: sha512-5PM3CKquzmaa6mow64zWJ0438/yGSqdPfjaXtwNDb31LezNWqFoGPSbvrW12T8iB4EBjeWot+qAA9nbUqqf3sw==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      tailwindcss: ^2.0.0 || >=3.0.0
+
   tailwindcss@3.4.10:
     resolution: {integrity: sha512-KWZkVPm7yJRhdu4SRSl9d4AK2wM3a50UsvgHZO7xY77NQr2V+fIrEuoDGQcbvswWvFGbS2f6e+jC/6WJm1Dl0w==}
     engines: {node: '>=14.0.0'}
@@ -4310,6 +4331,9 @@ packages:
 
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
+
+  vmsg@0.4.0:
+    resolution: {integrity: sha512-46BBqRSfqdFGUpO2j+Hpz8T9YE5uWG0/PWal1PT+R1o8NEthtjG/XWl4HzbB8hIHpg/UtmKvsxL2OKQBrIYcHQ==}
 
   vue-eslint-parser@9.4.3:
     resolution: {integrity: sha512-2rYRLWlIpaiN8xbPiDyXZXRgLGOtWxERV7ND5fFAv5qo1D2N9Fu9MNajBNc6o13lZ+24DAWCkQCvj4klgmcITg==}
@@ -8740,6 +8764,11 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
+  react-audio-visualize@1.2.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
   react-avatar-editor@13.0.2(@babel/core@7.25.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/plugin-transform-runtime': 7.25.4(@babel/core@7.25.2)
@@ -9229,6 +9258,10 @@ snapshots:
     dependencies:
       tailwindcss: 3.4.10
 
+  tailwindcss-safe-area@0.6.0(tailwindcss@3.4.10):
+    dependencies:
+      tailwindcss: 3.4.10
+
   tailwindcss@3.4.10:
     dependencies:
       '@alloc/quick-lru': 5.2.0
@@ -9515,6 +9548,8 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
+
+  vmsg@0.4.0: {}
 
   vue-eslint-parser@9.4.3(eslint@9.10.0(jiti@1.21.6)):
     dependencies:

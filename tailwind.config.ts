@@ -1,4 +1,5 @@
 import animate from 'tailwindcss-animate'
+import safeArea from 'tailwindcss-safe-area'
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
@@ -62,6 +63,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [animate],
+  plugins: [animate, safeArea],
 }
 export default config

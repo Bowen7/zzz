@@ -1,6 +1,6 @@
 import { Buffer } from 'node:buffer'
 import process from 'node:process'
-import { peerSchema } from '@/lib/share'
+import { peerSchema } from '@/lib/schema'
 import { createOpenAI } from '@ai-sdk/openai'
 import { createClient } from '@deepgram/sdk'
 import { type CoreMessage, generateObject } from 'ai'
@@ -56,7 +56,7 @@ const transcribe = async (blob: Blob) => {
     const { result } = await deepgram.listen.prerecorded.transcribeFile(
       buffer,
       {
-        model: 'whisper',
+        model: 'nova-2',
         language: 'en',
         smart_format: true,
       },

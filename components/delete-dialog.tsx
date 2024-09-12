@@ -6,27 +6,39 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
+import { buttonVariants } from '@/components/ui/button'
 import { useDeleteChat } from '@/lib/hooks'
 
 type Props = {
   id: number
-  children: React.ReactNode
+  open: boolean
+  setOpen: (open: boolean) => void
 }
-export const DeleteDialog = ({ id, children }: Props) => {
-  const onDelete = useDeleteChat(id)
+export const DeleteDialog = ({ id, open, setOpen }: Props) => {
+  const deleteChat = useDeleteChat(id)
+  const onDelete = () => {
+    deleteChat()
+    setOpen(false)
+  }
 
   return (
-    <AlertDialog>
-      {children}
+    <AlertDialog
+      open={open}
+      onOpenChange={setOpen}
+    >
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Chat?</AlertDialogTitle>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onDelete}>Continue</AlertDialogAction>
+          <AlertDialogAction
+            onClick={onDelete}
+            className={buttonVariants({ variant: 'destructive' })}
+          >
+            Continue
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

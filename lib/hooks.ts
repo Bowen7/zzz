@@ -1,7 +1,9 @@
+import { selectedAtom } from '@/lib/atom'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { useCallback, useEffect, useState } from 'react'
+import { useAtom, useSetAtom } from 'jotai'
+import { useCallback } from 'react'
 import { db } from './db'
-import type { Chat, Message } from './types'
+import type { Message } from './types'
 
 export const useChats = () =>
   useLiveQuery(async () => {
@@ -18,37 +20,39 @@ export const useUpdateChatTitle = (id: number) =>
     return db.chats.update(id, { title })
   }, [id])
 
-export const useUpdateChatMessages = (id: number) =>
-  useCallback((messages: Message[]) => {
-    return db.chats.update(id, { messages, updated: new Date() })
-  }, [id])
-
-export const useDeleteChat = (id: number) =>
-  useCallback(() => {
-    return db.chats.delete(id)
-  }, [id])
-
-export const useSelect = (chats: Chat[]) => {
-  const [selected, setSelected] = useState<number>(-1)
-  const onSelect = useCallback((id: number) => {
-    setSelected(id)
-  }, [])
-
-  useEffect(() => {
-    if (chats.length > 0) {
-      if (selected === -1 || !chats.find(chat => chat.id === selected)) {
-        setSelected(chats[0].id)
+export const useUpdateChatMessages = (id: number) => {
+  const [selected, setSelected] = useAtom(selectedAtom)
+  return useCallback(async (newMessages: Message[]) => {
+    // Create new chat if selected is -1
+    if (selected === -1) {
+      const id = await db.chats.add({
+        messages: newMessages,
+        title: 'New Chat',
+        updated: new Date(),
+      })
+      setSelected(id)
+    } else {
+      const chat = await db.chats.get(id)
+      if (!chat) {
+        return
       }
+      const messages = [...chat.messages, ...newMessages]
+      return db.chats.update(id, { messages, updated: new Date() })
     }
-  }, [selected, chats])
-  return { selected, onSelect }
+  }, [id, selected, setSelected])
 }
 
-export const useCreateChat = () =>
-  useCallback(async () => {
-    return await db.chats.add({
-      messages: [],
-      title: 'New Chat',
-      updated: new Date(),
-    })
-  }, [])
+export const useDeleteChat = (id: number) => {
+  const setSelected = useSetAtom(selectedAtom)
+  return useCallback(async () => {
+    await db.chats.delete(id)
+    setSelected(-1)
+  }, [id, setSelected])
+}
+
+export const useCreateChat = () => {
+  const setSelected = useSetAtom(selectedAtom)
+  return useCallback(() => {
+    setSelected(-1)
+  }, [setSelected])
+}

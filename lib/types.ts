@@ -2,7 +2,8 @@ export type Message = {
   id: string
   role: 'user'
   content: string
-  url: string
+  blob: Blob
+  isValid: boolean
 } | {
   id: string
   role: 'assistant'
