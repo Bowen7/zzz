@@ -1,19 +1,34 @@
 export type Message = {
-  id: string
+  id: number
+  chat: number
   role: 'user'
   content: string
   blob: Blob
-  isValid: boolean
+  suggestion: string
+  ok: boolean
 } | {
-  id: string
+  id: number
+  chat: number
   role: 'assistant'
   content: string
+  blob: Blob | null
+}
+
+// Without id and chat
+export type TempMessage = {
+  role: 'user'
+  content: string
+  blob: Blob
+  ok: boolean
   suggestion: string
+} | {
+  role: 'assistant'
+  content: string
+  blob: Blob | null
 }
 
 export type Chat = {
   id: number
   title: string
   updated: Date
-  messages: Message[]
 }

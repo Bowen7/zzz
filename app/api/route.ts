@@ -15,7 +15,7 @@ const groq = createOpenAI({
 
 const schema = zfd.formData({
   input: z.any(),
-  message: zfd.repeatableOfType(
+  messages: zfd.repeatableOfType(
     zfd.json(
       z.object({
         role: z.enum(['user', 'assistant', 'system']),
@@ -73,7 +73,7 @@ export const POST = async (req: Request) => {
     return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
   }
   const blob = data.input as Blob
-  const messages: CoreMessage[] = data.message || []
+  const messages: CoreMessage[] = data.messages || []
   const text = await transcribe(blob) || ''
 
   const { object } = await generateObject({

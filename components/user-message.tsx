@@ -5,17 +5,14 @@ import { AudioVisualizer } from 'react-audio-visualize'
 type Props = {
   content: string
   blob: Blob
-  isValid: boolean
+  ok: boolean
+  suggestion: string
 }
 
-export const UserMessage = ({ content, blob, isValid }: Props) => {
+export const UserMessage = ({ content, blob, ok, suggestion }: Props) => {
   const url = useMemo(() => URL.createObjectURL(blob), [blob])
   const { isLoading, ...audio } = useAudioPlayer({ src: url })
-  useEffect(() => {
-    if (!isLoading) {
-      audio.play()
-    }
-  }, [isLoading])
+  console.log(audio)
   return (
     <div>
       <p>{content}</p>

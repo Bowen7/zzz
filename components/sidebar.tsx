@@ -12,7 +12,6 @@ type Props = {
 export const newChat: Chat = {
   id: -1,
   title: 'New Chat',
-  messages: [],
   updated: new Date(),
 }
 
