@@ -17,6 +17,7 @@ export const AudioMessage = ({ autoplay = false, blob }: Props) => {
 
   useEffect(() => {
     if (!isLoading && !isReady) {
+      console.log(123)
       load(url, {
         format: 'mp3',
         onplay: () => {
