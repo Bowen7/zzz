@@ -1,17 +1,19 @@
-import { selectedAtom } from '@/lib/atom'
+import { readIDAtom, selectedAtom } from '@/lib/atom'
+import { EdgeSpeechTTS } from '@lobehub/tts'
 import dayjs from 'dayjs'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useRef } from 'react'
 import { db } from './db'
 import { responseSchema } from './schema'
 import type { TempMessage } from './types'
 
-export const useChats = () =>
-  useLiveQuery(async () => {
+export const useChats = () => {
+  const chats = useLiveQuery(async () => {
     return db.chats.orderBy('updated').reverse().toArray()
-  }) ?? []
-
+  })
+  return chats ?? []
+}
 export const useChat = () => {
   const selected = useAtomValue(selectedAtom)
   return useLiveQuery(async () => {
@@ -41,10 +43,10 @@ export const useAddMessages = (id: number) => {
     // Create new chat if selected is -1
     if (id === -1) {
       realId = await db.chats.add({
-        title: `Chat ${dayjs().format('YYYY-MM-DD HH:mm')}`,
+        title: `Chat ${dayjs().format('MM-DD HH:mm')}`,
         updated: new Date(),
       })
-      setSelected(id)
+      setSelected(realId)
     } else {
       await db.chats.update(id, { updated: new Date() })
     }
@@ -81,9 +83,24 @@ export const useCreateChat = () => {
   }, [setSelected])
 }
 
+export const useTTS = () =>
+  useCallback(async (id: number, text: string) => {
+    const tts = new EdgeSpeechTTS()
+    const response = await tts.create({
+      input: text,
+      options: {
+        voice: 'en-IN-NeerjaNeural',
+      },
+    })
+    const blob = await response.blob()
+    await db.messages.update(id, { blob })
+  }, [])
+
 export const useSubmit = () => {
   const selected = useAtomValue(selectedAtom)
+  const setReadID = useSetAtom(readIDAtom)
   const addMessages = useAddMessages(selected)
+  const tts = useTTS()
   return useCallback(async (blob: Blob) => {
     const formData = new FormData()
     formData.append('input', blob, 'audio.mp3')
@@ -104,17 +121,19 @@ export const useSubmit = () => {
       const { peer, text } = parsed.data
       const { ok, content, suggestion } = peer
       if (ok) {
-        await addMessages([
+        const id = await addMessages([
           { role: 'user', content: text, blob, ok: true, suggestion },
           { role: 'assistant', content, blob: null },
         ])
+        setReadID(id)
+        await tts(id, content)
       } else {
         await addMessages([
           { role: 'user', content: text, blob, ok: false, suggestion },
         ])
       }
     }
-  }, [addMessages, selected])
+  }, [addMessages, selected, tts, setReadID])
 }
 
 export const useLatest = <T>(value: T) => {

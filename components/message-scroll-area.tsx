@@ -1,15 +1,24 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { selectedAtom } from '@/lib/atom'
 import { useChatMessages } from '@/lib/hooks'
-import { useAtomValue } from 'jotai'
+import { useEffect, useRef } from 'react'
+import { AssistantMessage } from './assistant-message'
 import { UserMessage } from './user-message'
 
 export const MessageScrollArea = () => {
-  const selected = useAtomValue(selectedAtom)
-  const messages = useChatMessages(selected)
+  const messages = useChatMessages()
+  const viewportRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (viewportRef.current) {
+      viewportRef.current.scrollTo({
+        top: viewportRef.current.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+  }, [messages])
   return (
-    <ScrollArea className="flex-1">
-      <div className="p-4">
+    <ScrollArea className="flex-1" viewportRef={viewportRef}>
+      <div className="p-4 space-y-4">
         {messages.map((message) => {
           const {
             id,
@@ -24,14 +33,16 @@ export const MessageScrollArea = () => {
                     key={id}
                     content={content}
                     blob={blob}
-                    ok={message.ok}
                     suggestion={message.suggestion}
                   />
                 )
               : (
-                  <div key={id}>
-                    <div>{content}</div>
-                  </div>
+                  <AssistantMessage
+                    key={id}
+                    id={id}
+                    content={content}
+                    blob={blob}
+                  />
                 )
           )
         })}

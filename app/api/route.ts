@@ -4,11 +4,13 @@ import { peerSchema } from '@/lib/schema'
 import { createOpenAI } from '@ai-sdk/openai'
 import { createClient } from '@deepgram/sdk'
 import { type CoreMessage, generateObject } from 'ai'
+import Groq from 'groq-sdk'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { zfd } from 'zod-form-data'
 
-const groq = createOpenAI({
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
+const groqAI = createOpenAI({
   baseURL: 'https://api.groq.com/openai/v1',
   apiKey: process.env.GROQ_API_KEY,
 })
@@ -46,25 +48,33 @@ const INITIAL_MESSAGE: CoreMessage = {
   content: SYSTEM_MESSAGE,
 }
 
+// const transcribe = async (blob: Blob) => {
+//   const deepgram = createClient(process.env.DEEPGRAM_API_KEY)
+
+//   const arrayBuffer = await blob.arrayBuffer()
+//   const buffer = Buffer.from(arrayBuffer)
+
+//   try {
+//     const { result } = await deepgram.listen.prerecorded.transcribeFile(
+//       buffer,
+//       {
+//         model: 'nova-2',
+//         language: 'en',
+//         smart_format: true,
+//       },
+//     )
+//     return result?.results.channels[0].alternatives[0].transcript
+//   } catch {
+//     return ''
+//   }
+// }
+
 const transcribe = async (blob: Blob) => {
-  const deepgram = createClient(process.env.DEEPGRAM_API_KEY)
-
-  const arrayBuffer = await blob.arrayBuffer()
-  const buffer = Buffer.from(arrayBuffer)
-
-  try {
-    const { result } = await deepgram.listen.prerecorded.transcribeFile(
-      buffer,
-      {
-        model: 'nova-2',
-        language: 'en',
-        smart_format: true,
-      },
-    )
-    return result?.results.channels[0].alternatives[0].transcript
-  } catch {
-    return ''
-  }
+  const res = await groq.audio.transcriptions.create({
+    file: blob as File,
+    model: 'distil-whisper-large-v3-en',
+  })
+  return res?.text ?? ''
 }
 
 export const POST = async (req: Request) => {
@@ -74,10 +84,10 @@ export const POST = async (req: Request) => {
   }
   const blob = data.input as Blob
   const messages: CoreMessage[] = data.messages || []
-  const text = await transcribe(blob) || ''
+  const text = await transcribe(blob)
 
   const { object } = await generateObject({
-    model: groq('llama3-groq-8b-8192-tool-use-preview'),
+    model: groqAI('llama3-groq-8b-8192-tool-use-preview'),
     schema: peerSchema,
     messages: [INITIAL_MESSAGE, ...messages, {
       role: 'user',

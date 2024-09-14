@@ -1,16 +1,22 @@
 import { DeleteDialog } from '@/components/delete-dialog'
+import { newChat } from '@/components/sidebar'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { sidebarOpenedAtom } from '@/lib/atom'
-import { useCreateChat } from '@/lib/hooks'
-import { Plus as PlusIcon, Sidebar as SidebarIcon, Trash as TrashIcon } from '@phosphor-icons/react'
+import { useChat, useCreateChat } from '@/lib/hooks'
+import { DotsThreeCircle as DotsThreeCircleIcon, Plus as PlusIcon, Sidebar as SidebarIcon, Trash as TrashIcon } from '@phosphor-icons/react'
 import { useSetAtom } from 'jotai'
 import { useState } from 'react'
-import type { Chat } from '@/lib/types'
+import { SettingDialog } from './setting-dialog'
 
-type Props = {
-  chat: Chat
-}
-export const Header = ({ chat }: Props) => {
+export const Header = () => {
+  const [settingOpen, setSettingOpen] = useState(false)
+  const chat = useChat() ?? newChat
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const setSidebarOpened = useSetAtom(sidebarOpenedAtom)
   const createChat = useCreateChat()
@@ -34,17 +40,31 @@ export const Header = ({ chat }: Props) => {
         >
           <PlusIcon className="h-4 w-4" />
         </Button>
-        <Button
-          variant="ghost"
-          disabled={id === -1}
-          size="icon"
-          className="w-8 h-8"
-          onClick={() => setDeleteDialogOpen(true)}
-        >
-          <TrashIcon className="h-4 w-4" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-8 h-8"
+            >
+              <DotsThreeCircleIcon className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-12">
+            <DropdownMenuItem
+              disabled={id === -1}
+              onClick={() => setDeleteDialogOpen(true)}
+            >
+              Delete
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setSettingOpen(true)}>
+              Settings
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <DeleteDialog id={id} open={deleteDialogOpen} setOpen={setDeleteDialogOpen} />
+      <SettingDialog open={settingOpen} setOpen={setSettingOpen} />
     </div>
   )
 }

@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import { useLatest, useSubmit } from '@/lib/hooks'
 import { useAudioRecorder } from '@lobehub/tts/react'
 import { Microphone as MicIcon, MicrophoneSlash as MicSlashIcon } from '@phosphor-icons/react'
+import { GradientBackground } from './gradient-background'
 
 export const Mic = () => {
   const onSubmit = useSubmit()
@@ -20,17 +21,29 @@ export const Mic = () => {
   return (
     <div className="h-24 flex items-center justify-center border-t">
       <div className="inline-block relative">
-        {isRecording && (
-          <span className="z-[-1] animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-        )}
-        <Button
-          className="rounded-full w-12 h-12"
-          variant="outline"
-          size="icon"
-          onClick={onRecord}
-        >
-          {isRecording ? <MicIcon size={24} /> : <MicSlashIcon size={24} />}
-        </Button>
+        {isRecording
+          ? (
+              <GradientBackground className="rounded-full bg-white dark:bg-zinc-900">
+                <Button
+                  className="rounded-full w-12 h-12 bg-transparent overflow-hidden"
+                  variant="outline"
+                  size="icon"
+                  onClick={onRecord}
+                >
+                  <MicIcon size={24} />
+                </Button>
+              </GradientBackground>
+            )
+          : (
+              <Button
+                className="rounded-full w-12 h-12 bg-transparent overflow-hidden"
+                variant="outline"
+                size="icon"
+                onClick={onRecord}
+              >
+                <MicSlashIcon size={24} />
+              </Button>
+            )}
       </div>
     </div>
   )

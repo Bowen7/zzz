@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -29,6 +30,9 @@ export function RenameDialog({ open, setOpen, id, originTitle }: Props) {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Rename chat title</DialogTitle>
+          <DialogDescription>
+            You can rename the chat title to make it easier to identify.
+          </DialogDescription>
         </DialogHeader>
         <div>
           <Input

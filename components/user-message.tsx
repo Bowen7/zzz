@@ -1,29 +1,26 @@
-import { AudioPlayer, useAudioPlayer } from '@lobehub/tts/react'
-import { useEffect, useMemo } from 'react'
-import { AudioVisualizer } from 'react-audio-visualize'
+import { userLightningVisibleAtom, userTextVisibleAtom } from '@/lib/atom'
+import { useAtomValue } from 'jotai'
+import { AudioMessage } from './audio-message'
+import { HelpMessage } from './help-message'
 
 type Props = {
   content: string
   blob: Blob
-  ok: boolean
   suggestion: string
 }
 
-export const UserMessage = ({ content, blob, ok, suggestion }: Props) => {
-  const url = useMemo(() => URL.createObjectURL(blob), [blob])
-  const { isLoading, ...audio } = useAudioPlayer({ src: url })
-  console.log(audio)
+export const UserMessage = ({ content, blob, suggestion }: Props) => {
+  const defaultLightningVisible = useAtomValue(userLightningVisibleAtom)
+  const defaultTextVisible = useAtomValue(userTextVisibleAtom)
   return (
-    <div>
-      <p>{content}</p>
-      <AudioPlayer audio={audio} autoplay isLoading={isLoading} />
-      <AudioVisualizer
-        blob={blob}
-        width={500}
-        height={75}
-        barWidth={1}
-        gap={0}
-        barColor="#f76565"
+    <div className="flex flex-col items-end pl-8 space-y-1">
+      <AudioMessage blob={blob} />
+      <HelpMessage
+        role="user"
+        content={content}
+        suggestion={suggestion}
+        defaultLightningVisible={defaultLightningVisible}
+        defaultTextVisible={defaultTextVisible}
       />
     </div>
   )
