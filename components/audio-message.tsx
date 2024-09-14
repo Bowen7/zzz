@@ -26,6 +26,7 @@ export const AudioMessage = ({ autoplay = false, blob }: Props) => {
           setPos(0)
         },
         autoplay,
+        html5: /iPhone|iPad|iPod|Android/i.test(navigator.userAgent),
       })
     }
   }, [load, url, isLoading, isReady, readID, autoplay, setReadID])
