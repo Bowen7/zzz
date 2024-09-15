@@ -18,6 +18,7 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: 'Speaking',
   description: 'Speaking',
+  viewport: { width: 'device-width', initialScale: 1 },
 }
 
 export default function RootLayout({

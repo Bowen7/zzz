@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { useUpdateChatTitle } from '@/lib/hooks'
+import { useUpdateChatTitle } from '@/hooks'
 import { useState } from 'react'
 
 type Props = {

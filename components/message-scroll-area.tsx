@@ -1,5 +1,5 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { useChatMessages } from '@/lib/hooks'
+import { useChatMessages } from '@/hooks'
 import { useEffect, useRef } from 'react'
 import { AssistantMessage } from './assistant-message'
 import { UserMessage } from './user-message'

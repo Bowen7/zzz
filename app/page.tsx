@@ -6,7 +6,7 @@ import { Sidebar } from '@/components/sidebar'
 
 export default function Home() {
   return (
-    <div className="h-svh overflow-hidden flex font-[family-name:var(--font-geist-sans)]">
+    <div className="h-svh overflow-hidden flex font-[family-name:var(--font-geist-sans)] bg-background">
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header />

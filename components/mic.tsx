@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { useLatest, useSubmit } from '@/lib/hooks'
+import { useLatest, useSubmit } from '@/hooks'
 import { useAudioRecorder } from '@lobehub/tts/react'
 import { Microphone as MicIcon, MicrophoneSlash as MicSlashIcon } from '@phosphor-icons/react'
 import { GradientBackground } from './gradient-background'

@@ -8,7 +8,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { buttonVariants } from '@/components/ui/button'
-import { useDeleteChat } from '@/lib/hooks'
+import { useDeleteChat } from '@/hooks'
 
 type Props = {
   id: number

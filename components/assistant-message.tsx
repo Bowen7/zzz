@@ -1,5 +1,5 @@
+import { useTTS } from '@/hooks'
 import { assistantTextVisibleAtom, readIDAtom } from '@/lib/atom'
-import { useTTS } from '@/lib/hooks'
 import { Play as PlayIcon, ArrowClockwise as ReloadIcon } from '@phosphor-icons/react'
 import { useAtom, useAtomValue } from 'jotai'
 import { AudioMessage } from './audio-message'
