@@ -1,5 +1,4 @@
 import animate from 'tailwindcss-animate'
-import safeArea from 'tailwindcss-safe-area'
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
@@ -11,8 +10,25 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      keyframes: {
+        'gradient-shape-1': {
+          '33%': { transform: 'translate(-12px, 0)' },
+        },
+        'gradient-shape-2': {
+          '33%': { transform: 'translate(-12px, -12px)' },
+        },
+        'gradient-shape-3': {
+          '33%': { transform: 'translate(12px, 12px)' },
+        },
+        'gradient-shape-4': {
+          '33%': { transform: 'translate(12px, 0)' },
+        },
+      },
       animation: {
-        'spin-slow': 'spin 3s linear infinite',
+        'gradient-shape-1': 'gradient-shape-1 6s 1s ease-out infinite',
+        'gradient-shape-2': 'gradient-shape-2 6s ease-in infinite',
+        'gradient-shape-3': 'gradient-shape-3 6s ease-out infinite',
+        'gradient-shape-4': 'gradient-shape-4 6s 1s ease-in infinite',
       },
       colors: {
         background: 'hsl(var(--background))',
@@ -66,6 +82,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [animate, safeArea],
+  plugins: [animate],
 }
 export default config
