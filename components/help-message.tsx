@@ -21,11 +21,13 @@ export const HelpMessage = ({ role, content, suggestion, defaultLightningVisible
   const [textVisible, setTextVisible] = useState(defaultTextVisible)
   return (
     <>
-      {textVisible && <div className={clsx('text-end rounded-lg px-3 py-2 bg-muted', role === 'user' ? 'text-end' : 'text-start')}>{content}</div>}
+      {textVisible && <div className={clsx('text-end rounded-lg px-3 py-2', role === 'user' ? 'text-end bg-blue-500 text-white' : 'text-start bg-muted')}>{content}</div>}
       {role === 'user' && lightningVisible && (
-        <div className={clsx('text-end rounded-lg px-3 inline-flex items-center space-x-1', role === 'user' ? 'text-end' : 'text-start')}>
-          <LightningIcon className="w-4 h-4" />
-          <span>Suggestion: </span>
+        <div className={clsx('rounded-lg px-3 inline-flex items-start space-x-1')}>
+          <div className="inline-flex items-center space-x-1">
+            <LightningIcon className="w-4 h-4" />
+            <span>SUGG: </span>
+          </div>
           <span>{suggestion}</span>
         </div>
       )}

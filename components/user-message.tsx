@@ -13,8 +13,8 @@ export const UserMessage = ({ content, blob, suggestion }: Props) => {
   const defaultLightningVisible = useAtomValue(userLightningVisibleAtom)
   const defaultTextVisible = useAtomValue(userTextVisibleAtom)
   return (
-    <div className="flex flex-col items-end pl-8 space-y-1">
-      <AudioMessage blob={blob} />
+    <div className="flex flex-col items-end pr-4 space-y-1">
+      <AudioMessage role="user" blob={blob} />
       <HelpMessage
         role="user"
         content={content}

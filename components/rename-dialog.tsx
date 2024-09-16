@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -6,27 +5,42 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog'
+} from '@/components/responsive-dialog'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useUpdateChatTitle } from '@/hooks'
-import { useState } from 'react'
+import { renamingAtom } from '@/lib/atom'
+import { useAtom } from 'jotai'
+import { useEffect, useState } from 'react'
 
-type Props = {
-  open: boolean
-  setOpen: (open: boolean) => void
-  id: number
-  originTitle: string
-}
-export function RenameDialog({ open, setOpen, id, originTitle }: Props) {
+export function RenameDialog() {
+  const [renaming, setRenaming] = useAtom(renamingAtom)
+  const { id, title: originTitle, open } = renaming
   const [title, setTitle] = useState(originTitle)
   const updateTile = useUpdateChatTitle(id)
 
+  useEffect(() => {
+    setTitle(originTitle)
+  }, [originTitle])
+
+  const onOpenChange = (open: boolean) => {
+    if (!open) {
+      setRenaming({
+        id: -1,
+        open: false,
+        title: '',
+      })
+    } else {
+      setRenaming(v => ({ ...v, open }))
+    }
+  }
+
   const onSave = () => {
     updateTile(title)
-    setOpen(false)
+    onOpenChange(false)
   }
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Rename chat title</DialogTitle>

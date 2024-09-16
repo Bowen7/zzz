@@ -1,7 +1,9 @@
 'use client'
+import { ConversationScrollArea } from '@/components/conversation-scroll-area'
+import { DeleteDialog } from '@/components/delete-dialog'
 import { Header } from '@/components/header'
-import { MessageScrollArea } from '@/components/message-scroll-area'
 import { Mic } from '@/components/mic'
+import { RenameDialog } from '@/components/rename-dialog'
 import { Sidebar } from '@/components/sidebar'
 
 export default function Home() {
@@ -10,9 +12,11 @@ export default function Home() {
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Header />
-        <MessageScrollArea />
+        <ConversationScrollArea />
         <Mic />
       </div>
+      <DeleteDialog />
+      <RenameDialog />
     </div>
   )
 }

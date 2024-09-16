@@ -12,5 +12,5 @@ export const useTTS = () =>
       },
     })
     const blob = await response.blob()
-    await db.messages.update(id, { blob })
+    await db.conversations.update(id, { assistantBlob: blob })
   }, [])

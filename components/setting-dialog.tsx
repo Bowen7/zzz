@@ -28,14 +28,14 @@ export function SettingDialog({ open, setOpen }: Props) {
   }
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] h-svh md:h-auto flex flex-col">
         <DialogHeader>
           <DialogTitle>Setting</DialogTitle>
           <DialogDescription>
             Change the setting of the chat.
           </DialogDescription>
         </DialogHeader>
-        <div className="">
+        <div className="flex-1">
           <Button variant="destructive" onClick={onDelete}>
             {deleteConfirming ? 'Confirm delete' : 'Delete all chats'}
           </Button>

@@ -20,9 +20,9 @@ export const AssistantMessage = ({ content, blob, id }: Props) => {
     tts(id, content)
   }
   return (
-    <div className="flex flex-col items-start pl-8 space-y-1">
+    <div className="flex flex-col items-start pl-4 space-y-1">
       {blob
-        ? <AudioMessage blob={blob} autoplay={readID === id} />
+        ? <AudioMessage role="assistant" blob={blob} autoplay={readID === id} />
         : readID === id
           ? <div className="rounded-lg px-3 py-2 bg-muted"><ReloadIcon className="w-4 h-4 animate-spin" /></div>
           : (

@@ -4,22 +4,19 @@ import dayjs from 'dayjs'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
-import type { TempMessage } from '@/lib/types'
+import type { TempConversationModel } from '@/lib/types'
 
-export const useChatMessages = () => {
+export const useConversations = () => {
   const selected = useAtomValue(selectedAtom)
   return useLiveQuery(async () => {
-    return db.messages.where('chat').equals(selected).sortBy('id')
+    return db.conversations.where('chat').equals(selected).sortBy('id')
   }, [selected]) ?? []
 }
 
-export const useAddMessages = (id: number) => {
+export const useAddConversation = (id: number) => {
   const setSelected = useSetAtom(selectedAtom)
-  return useCallback(async (messages: TempMessage[]) => {
+  return useCallback(async (conversation: TempConversationModel) => {
     let realId = id
-    if (!Array.isArray(messages)) {
-      messages = [messages]
-    }
     // Create new chat if selected is -1
     if (id === -1) {
       realId = await db.chats.add({
@@ -30,12 +27,9 @@ export const useAddMessages = (id: number) => {
     } else {
       await db.chats.update(id, { updated: new Date() })
     }
-    return db.messages.bulkAdd(messages.map(message => ({
-      ...message,
+    return db.conversations.add({
+      ...conversation,
       chat: realId,
-    })))
+    })
   }, [id, setSelected])
 }
-
-export const useSetMessageBlob = (id: number) =>
-  useCallback((blob: Blob) => db.messages.update(id, { blob }), [id])

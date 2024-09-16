@@ -1,7 +1,6 @@
 import { z } from 'zod'
 
 export const peerSchema = z.object({
-  ok: z.boolean(),
   suggestion: z.string(),
   content: z.string(),
 })

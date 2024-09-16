@@ -1,46 +1,61 @@
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
+  Dialog,
+  DialogAction,
+  DialogCancel,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/responsive-dialog'
 import { buttonVariants } from '@/components/ui/button'
 import { useDeleteChat } from '@/hooks'
+import { deletingAtom } from '@/lib/atom'
+import { useAtom } from 'jotai'
 
-type Props = {
-  id: number
-  open: boolean
-  setOpen: (open: boolean) => void
-}
-export const DeleteDialog = ({ id, open, setOpen }: Props) => {
+export const DeleteDialog = () => {
+  const [deleting, setDeleting] = useAtom(deletingAtom)
+  const { id, open } = deleting
+
   const deleteChat = useDeleteChat(id)
+
+  const onOpenChange = (open: boolean) => {
+    if (!open) {
+      setDeleting({
+        id: -1,
+        open: false,
+      })
+    } else {
+      setDeleting(v => ({ ...v, open }))
+    }
+  }
+
   const onDelete = () => {
     deleteChat()
-    setOpen(false)
+    onOpenChange(false)
   }
 
   return (
-    <AlertDialog
+    <Dialog
+      alert
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={onOpenChange}
     >
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Delete Chat?</AlertDialogTitle>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Delete Chat?</DialogTitle>
+          <DialogDescription>This action cannot be undone.</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogCancel>Cancel</DialogCancel>
+          <DialogAction
             onClick={onDelete}
             className={buttonVariants({ variant: 'destructive' })}
           >
             Continue
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+          </DialogAction>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

@@ -1,4 +1,3 @@
-import { DeleteDialog } from '@/components/delete-dialog'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -6,22 +5,33 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { selectedAtom } from '@/lib/atom'
+import { deletingAtom, renamingAtom, selectedAtom } from '@/lib/atom'
 import { DotsThree as DotsThreeIcon } from '@phosphor-icons/react'
 import { clsx } from 'clsx'
-import { useAtom } from 'jotai'
-import { useState } from 'react'
-import type { Chat } from '@/lib/types'
-import { RenameDialog } from './rename-dialog'
+import { useAtom, useSetAtom } from 'jotai'
+import type { ChatModel } from '@/lib/types'
 
 type Props = {
-  chat: Chat
+  chat: ChatModel
 }
-export const ChatItem = ({ chat }: Props) => {
+export const Chat = ({ chat }: Props) => {
   const { id, title } = chat
-  const [renameDialogOpen, setRenameDialogOpen] = useState(false)
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [selected, setSelected] = useAtom(selectedAtom)
+  const setDeleting = useSetAtom(deletingAtom)
+  const setRenaming = useSetAtom(renamingAtom)
+  const onRename = () => {
+    setRenaming({
+      id,
+      open: true,
+      title,
+    })
+  }
+  const onDelete = () => {
+    setDeleting({
+      id,
+      open: true,
+    })
+  }
   return (
     <div
       className={clsx('md:hover:bg-accent px-3 h-9 flex items-center justify-between rounded-md font-medium cursor-pointer group', selected === chat.id ? 'bg-accent' : '')}
@@ -40,26 +50,15 @@ export const ChatItem = ({ chat }: Props) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-16">
-            <DropdownMenuItem onClick={() => setRenameDialogOpen(true)}>
+            <DropdownMenuItem onClick={onRename}>
               Rename
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setDeleteDialogOpen(true)}>
+            <DropdownMenuItem onClick={onDelete}>
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )}
-      <DeleteDialog
-        id={id}
-        open={deleteDialogOpen}
-        setOpen={setDeleteDialogOpen}
-      />
-      <RenameDialog
-        originTitle={title}
-        id={id}
-        open={renameDialogOpen}
-        setOpen={setRenameDialogOpen}
-      />
     </div>
   )
 }

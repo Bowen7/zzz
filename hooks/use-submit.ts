@@ -3,22 +3,26 @@ import { db } from '@/lib/db'
 import { responseSchema } from '@/lib/schema'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
-import { useAddMessages } from './message'
+import { useAddConversation } from './conversation'
 import { useTTS } from './use-tts'
 
 export const useSubmit = () => {
   const selected = useAtomValue(selectedAtom)
   const setReadID = useSetAtom(readIDAtom)
-  const addMessages = useAddMessages(selected)
+  const addConversation = useAddConversation(selected)
   const tts = useTTS()
   return useCallback(async (blob: Blob) => {
     const formData = new FormData()
     formData.append('input', blob, 'audio.mp3')
-    const messages = await db.messages.where('chat').equals(selected).sortBy('id') ?? []
-    for (const message of messages) {
+    const conversations = await db.conversations.where('chat').equals(selected).sortBy('id') ?? []
+    for (const conversation of conversations) {
       formData.append('messages', JSON.stringify({
-        role: message.role,
-        content: message.content,
+        role: 'user',
+        content: conversation.userContent,
+      }))
+      formData.append('messages', JSON.stringify({
+        role: 'assistant',
+        content: conversation.assistantContent,
       }))
     }
     const response = await fetch('/api', {
@@ -29,19 +33,16 @@ export const useSubmit = () => {
     const parsed = responseSchema.safeParse(data)
     if (parsed.success) {
       const { peer, text } = parsed.data
-      const { ok, content, suggestion } = peer
-      if (ok) {
-        const id = await addMessages([
-          { role: 'user', content: text, blob, ok: true, suggestion },
-          { role: 'assistant', content, blob: null },
-        ])
-        setReadID(id)
-        await tts(id, content)
-      } else {
-        await addMessages([
-          { role: 'user', content: text, blob, ok: false, suggestion },
-        ])
-      }
+      const { content, suggestion } = peer
+      const id = await addConversation({
+        userContent: text,
+        userBlob: blob,
+        suggestion,
+        assistantContent: content,
+        assistantBlob: null,
+      })
+      setReadID(id)
+      await tts(id, content)
     }
-  }, [addMessages, selected, tts, setReadID])
+  }, [addConversation, selected, tts, setReadID])
 }

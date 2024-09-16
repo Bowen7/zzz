@@ -1,5 +1,5 @@
 export * from './chat'
-export * from './message'
+export * from './conversation'
 export * from './use-audio'
 export * from './use-latest'
 export * from './use-submit'

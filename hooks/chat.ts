@@ -10,11 +10,10 @@ export const useChats = () => {
   })
   return chats ?? []
 }
-export const useChat = () => {
-  const selected = useAtomValue(selectedAtom)
+export const useChat = (id: number) => {
   return useLiveQuery(async () => {
-    return db.chats.get(selected)
-  }, [selected]) ?? null
+    return db.chats.get(id)
+  }, [id]) ?? null
 }
 
 export const useUpdateChatTitle = (id: number) =>
@@ -25,11 +24,11 @@ export const useUpdateChatTitle = (id: number) =>
 export const useDeleteChat = (id: number) => {
   const setSelected = useSetAtom(selectedAtom)
   return useCallback(async () => {
-    // Delete chat and relative messages
-    db.transaction('rw', db.chats, db.messages, async () => {
+    // Delete chat and relative conversations
+    db.transaction('rw', db.chats, db.conversations, async () => {
       return Promise.all([
         db.chats.delete(id),
-        db.messages.where('chat').equals(id).delete(),
+        db.conversations.where('chat').equals(id).delete(),
       ])
     })
     setSelected(-1)

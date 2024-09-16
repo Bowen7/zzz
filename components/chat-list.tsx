@@ -1,9 +1,9 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useChats } from '@/hooks'
-import type { Chat } from '@/lib/types'
-import { ChatItem } from './chat-item'
+import type { ChatModel } from '@/lib/types'
+import { Chat } from './chat'
 
-export const newChat: Chat = {
+export const newChat: ChatModel = {
   id: -1,
   title: 'New Chat',
   updated: new Date(),
@@ -16,12 +16,12 @@ export const ChatList = () => {
       <h1 className="font-bold text-center py-4">Speak Now</h1>
       <ScrollArea className="flex-1">
         <div className="space-y-1 px-4">
-          <ChatItem
+          <Chat
             key={newChat.id}
             chat={newChat}
           />
           {chats?.map(chat => (
-            <ChatItem
+            <Chat
               key={chat.id}
               chat={chat}
             />

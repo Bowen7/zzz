@@ -8,9 +8,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useChat, useCreateChat } from '@/hooks'
-import { sidebarOpenedAtom } from '@/lib/atom'
+import { deletingAtom, renamingAtom, selectedAtom, sidebarOpenedAtom } from '@/lib/atom'
 import { DotsThreeCircle as DotsThreeCircleIcon, List as ListIcon, Plus as PlusIcon, Sidebar as SidebarIcon } from '@phosphor-icons/react'
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useState } from 'react'
 import { useMediaQuery } from 'usehooks-ts'
 import { ChatListDrawer } from './chat-list-drawer'
@@ -19,13 +19,28 @@ import { SettingDialog } from './setting-dialog'
 export const Header = () => {
   const [settingOpen, setSettingOpen] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const chat = useChat() ?? newChat
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const setDeleting = useSetAtom(deletingAtom)
+  const setRenaming = useSetAtom(renamingAtom)
+  const selected = useAtomValue(selectedAtom)
+  const chat = useChat(selected) ?? newChat
   const isDesktop = useMediaQuery('(min-width: 768px)', { initializeWithValue: false })
   const setSidebarOpened = useSetAtom(sidebarOpenedAtom)
   const createChat = useCreateChat()
   const { id, title } = chat
 
+  const onDelete = () => {
+    setDeleting({
+      id,
+      open: true,
+    })
+  }
+  const onRename = () => {
+    setRenaming({
+      id,
+      open: true,
+      title,
+    })
+  }
   return (
     <div className="h-14 border-b flex items-center justify-between px-4 space-x-2">
       <div className="flex items-center space-x-2">
@@ -60,7 +75,13 @@ export const Header = () => {
           <DropdownMenuContent className="w-12">
             <DropdownMenuItem
               disabled={id === -1}
-              onClick={() => setDeleteDialogOpen(true)}
+              onClick={onRename}
+            >
+              Rename
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              disabled={id === -1}
+              onClick={onDelete}
             >
               Delete
             </DropdownMenuItem>
@@ -70,9 +91,8 @@ export const Header = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <DeleteDialog id={id} open={deleteDialogOpen} setOpen={setDeleteDialogOpen} />
-      <SettingDialog open={settingOpen} setOpen={setSettingOpen} />
       {!isDesktop && <ChatListDrawer open={drawerOpen} onOpenChange={setDrawerOpen} />}
+      <SettingDialog open={settingOpen} setOpen={setSettingOpen} />
     </div>
   )
 }

@@ -1,15 +1,15 @@
 import { Dexie } from 'dexie'
 import type { EntityTable } from 'dexie'
-import type { Chat, Message } from './types'
+import type { ChatModel, ConversationModel } from './types'
 
 const db = new Dexie('SpeakingDB') as Dexie & {
-  chats: EntityTable<Chat, 'id'>
-  messages: EntityTable<Message, 'id'>
+  chats: EntityTable<ChatModel, 'id'>
+  conversations: EntityTable<ConversationModel, 'id'>
 }
 
 db.version(1).stores({
   chats: '++id, updated',
-  messages: '++id, chat',
+  conversations: '++id, chat',
 })
 
 export {
