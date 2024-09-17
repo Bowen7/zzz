@@ -6,7 +6,6 @@ import { type CoreMessage, generateObject } from 'ai'
 import Groq from 'groq-sdk'
 import { z } from 'zod'
 import { zfd } from 'zod-form-data'
-import { type Result, err, ok } from './utils'
 import { peerSchema } from '@/lib/schema'
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
