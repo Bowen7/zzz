@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLatest } from './use-latest'
 
 type Options = {
@@ -12,6 +12,12 @@ export const useAudio = (src: string, options: Options) => {
   const [isLoading, setIsLoading] = useState(true)
   const onEndedRef = useLatest(options.onEnded)
   const onPlayRef = useLatest(options.onPlay)
+
+  useEffect(() => {
+    if (options.autoPlay && !isLoading) {
+      audioRef.current.play()
+    }
+  }, [options.autoPlay, isLoading])
 
   const play = useCallback(() => {
     audioRef.current.play()
@@ -40,7 +46,6 @@ export const useAudio = (src: string, options: Options) => {
       <audio
         className="hidden"
         ref={audioRef}
-        autoPlay={options.autoPlay}
         onCanPlayThrough={() => setIsLoading(false)}
         onEnded={onEnded}
         onPlay={onPlay}
