@@ -34,12 +34,13 @@ export const useSubmit = () => {
     if (parsed.success) {
       const { peer, text } = parsed.data
       const { content, suggestion } = peer
+      const userAudio = await blob.arrayBuffer()
       const id = await addConversation({
         userContent: text,
-        userBlob: blob,
+        userAudio,
         suggestion,
         assistantContent: content,
-        assistantBlob: null,
+        assistantAudio: null,
       })
       setReadID(id)
       await tts(id, content)

@@ -1,8 +1,6 @@
-import { Buffer } from 'node:buffer'
 import process from 'node:process'
 import { peerSchema } from '@/lib/schema'
 import { createOpenAI } from '@ai-sdk/openai'
-import { createClient } from '@deepgram/sdk'
 import { type CoreMessage, generateObject } from 'ai'
 import Groq from 'groq-sdk'
 import { NextResponse } from 'next/server'

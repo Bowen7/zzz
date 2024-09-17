@@ -24,21 +24,21 @@ export const ConversationScrollArea = () => {
             id,
             userContent,
             assistantContent,
-            userBlob,
-            assistantBlob,
+            userAudio,
+            assistantAudio,
             suggestion,
           } = conversation
           return (
             <Fragment key={id}>
               <UserMessage
                 content={userContent}
-                blob={userBlob}
+                audio={userAudio}
                 suggestion={suggestion}
               />
               <AssistantMessage
                 id={id}
                 content={assistantContent}
-                blob={assistantBlob}
+                audio={assistantAudio}
               />
             </Fragment>
           )

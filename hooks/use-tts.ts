@@ -12,5 +12,6 @@ export const useTTS = () =>
       },
     })
     const blob = await response.blob()
-    await db.conversations.update(id, { assistantBlob: blob })
+    const audio = await blob.arrayBuffer()
+    await db.conversations.update(id, { assistantAudio: audio })
   }, [])

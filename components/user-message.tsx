@@ -1,17 +1,19 @@
 import { userLightningVisibleAtom, userTextVisibleAtom } from '@/lib/atom'
 import { useAtomValue } from 'jotai'
+import { useMemo } from 'react'
 import { AudioMessage } from './audio-message'
 import { HelpMessage } from './help-message'
 
 type Props = {
   content: string
-  blob: Blob
+  audio: ArrayBuffer
   suggestion: string
 }
 
-export const UserMessage = ({ content, blob, suggestion }: Props) => {
+export const UserMessage = ({ content, audio, suggestion }: Props) => {
   const defaultLightningVisible = useAtomValue(userLightningVisibleAtom)
   const defaultTextVisible = useAtomValue(userTextVisibleAtom)
+  const blob = useMemo(() => new Blob([audio], { type: 'audio/mp3' }), [audio])
   return (
     <div className="flex flex-col items-end pr-4 space-y-1">
       <AudioMessage role="user" blob={blob} />

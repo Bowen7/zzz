@@ -2,18 +2,21 @@ import { useTTS } from '@/hooks'
 import { assistantTextVisibleAtom, readIDAtom } from '@/lib/atom'
 import { Play as PlayIcon, ArrowClockwise as ReloadIcon } from '@phosphor-icons/react'
 import { useAtom, useAtomValue } from 'jotai'
+import { useMemo } from 'react'
 import { AudioMessage } from './audio-message'
 import { HelpMessage } from './help-message'
 
 type Props = {
   content: string
-  blob: Blob | null
+  audio: ArrayBuffer | null
   id: number
 }
-export const AssistantMessage = ({ content, blob, id }: Props) => {
+export const AssistantMessage = ({ content, audio, id }: Props) => {
   const defaultTextVisible = useAtomValue(assistantTextVisibleAtom)
   const [readID, setReadID] = useAtom(readIDAtom)
   const tts = useTTS()
+
+  const blob = useMemo(() => audio ? new Blob([audio], { type: 'audio/mp3' }) : null, [audio])
 
   const onLoadTTS = () => {
     setReadID(id)
