@@ -69,7 +69,7 @@ const app = new Hono().post('/chat', async (c) => {
   const messages: CoreMessage[] = data.messages || []
   const text = await transcribe(blob)
   const { object } = await generateObject({
-    model: groqAI('llama3-groq-8b-8192-tool-use-preview'),
+    model: groqAI('llama3-groq-70b-8192-tool-use-preview'),
     schema: peerSchema,
     messages: [INITIAL_MESSAGE, ...messages, {
       role: 'user',
