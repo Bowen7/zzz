@@ -7,6 +7,5 @@ export default antfu({
     'style/brace-style': ['error', '1tbs'],
     'antfu/top-level-function': 'off',
     '@typescript-eslint/consistent-type-definitions': ['warn', 'type'],
-    'regexp/no-unused-capturing-group': 'off',
   },
 })
