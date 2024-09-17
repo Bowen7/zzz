@@ -27,7 +27,7 @@ export const useAudioProvider = () => {
     if (id && id !== currentId) {
       setIsLoading(true)
       setCurrentId(id!)
-      const url = URL.createObjectURL(blob)
+      const url = URL.createObjectURL(blob!)
       sourceRef.current?.setAttribute('src', url)
       audioRef.current?.load()
     } else {
