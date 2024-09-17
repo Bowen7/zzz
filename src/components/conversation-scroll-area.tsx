@@ -34,6 +34,7 @@ export const ConversationScrollArea = () => {
                 content={userContent}
                 audio={userAudio}
                 suggestion={suggestion}
+                id={id}
               />
               <AssistantMessage
                 id={id}

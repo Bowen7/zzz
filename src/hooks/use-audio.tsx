@@ -1,44 +1,53 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { useLatest } from './use-latest'
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 
-type Options = {
-  autoPlay?: boolean
-  onPlay?: () => void
-  onEnded?: () => void
-}
-export const useAudio = (src: string, options: Options) => {
-  const audioRef = useRef<HTMLAudioElement>(null!)
+export const AudioReactContext = createContext<{
+  currentId: string
+  isLoading: boolean
+  isPlaying: boolean
+  audioRef: React.RefObject<HTMLAudioElement>
+  play: (id: string, blob?: Blob) => void
+  pause: () => void
+}>({ currentId: '', isLoading: true, isPlaying: false, audioRef: { current: null }, play: () => {}, pause: () => {} })
+
+export const useAudioProvider = () => {
+  const [currentId, setCurrentId] = useState('')
+  const audioRef = useRef<HTMLAudioElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const onEndedRef = useLatest(options.onEnded)
-  const onPlayRef = useLatest(options.onPlay)
+  const sourceRef = useRef<HTMLSourceElement>(null)
 
   useEffect(() => {
-    if (options.autoPlay && !isLoading) {
-      audioRef.current.play()
+    if (!isLoading) {
+      audioRef.current?.play()
+      setIsPlaying(true)
     }
-  }, [options.autoPlay, isLoading])
+  }, [isLoading])
 
-  const play = useCallback(() => {
-    audioRef.current.play()
-  }, [])
+  const play = useCallback((id?: string, blob?: Blob) => {
+    if (id && id !== currentId) {
+      setIsLoading(true)
+      setCurrentId(id!)
+      const url = URL.createObjectURL(blob)
+      sourceRef.current?.setAttribute('src', url)
+      audioRef.current?.load()
+    } else {
+      if (!isLoading) {
+        audioRef.current?.play()
+        setIsPlaying(true)
+      }
+    }
+  }, [currentId, isLoading])
 
   const pause = useCallback(() => {
-    audioRef.current.pause()
+    audioRef.current?.pause()
   }, [])
-
-  const onPlay = useCallback(() => {
-    onPlayRef.current?.()
-    setIsPlaying(true)
-  }, [onPlayRef])
-
-  const onEnded = useCallback(() => {
-    onEndedRef.current?.()
-    setIsPlaying(false)
-  }, [onEndedRef])
 
   const onPause = useCallback(() => {
     setIsPlaying(false)
+  }, [])
+
+  const onCanPlayThrough = useCallback(() => {
+    setIsLoading(false)
   }, [])
 
   return {
@@ -46,18 +55,36 @@ export const useAudio = (src: string, options: Options) => {
       <audio
         className="hidden"
         ref={audioRef}
-        onCanPlayThrough={() => setIsLoading(false)}
-        onEnded={onEnded}
-        onPlay={onPlay}
+        onCanPlayThrough={onCanPlayThrough}
         onPause={onPause}
       >
-        <source src={src} type="audio/mp3" />
+        <source ref={sourceRef} type="audio/mp3" />
       </audio>
     ),
+    currentId,
     play,
     pause,
     isLoading,
     audioRef,
     isPlaying,
   }
+}
+
+export const useAudio = (id: string, blob: Blob) => {
+  const { currentId, isLoading, isPlaying, audioRef, play, pause } = useContext(AudioReactContext)
+  const onPlay = useCallback(() => {
+    play(id, blob)
+  }, [play, id, blob])
+  const onPause = useCallback(() => {
+    if (id === currentId) {
+      pause()
+    }
+  }, [pause, currentId, id])
+  const isCurrent = id === currentId
+  return { isLoading, isCurrent, isPlaying: isPlaying && isCurrent, audioRef, play: onPlay, pause: onPause }
+}
+
+export const usePlay = () => {
+  const { play } = useContext(AudioReactContext)
+  return play
 }

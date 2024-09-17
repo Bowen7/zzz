@@ -1,34 +1,23 @@
 import clsx from 'clsx'
-import { useSetAtom } from 'jotai'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AudioVisualizer } from 'react-audio-visualize'
-import { readIDAtom } from '@/lib/atom'
 import { useAudio } from '@/hooks'
 
 type Props = {
+  id: number
   role: 'user' | 'assistant'
   autoplay?: boolean
   blob: Blob
 }
-export const AudioMessage = ({ role, autoplay = false, blob }: Props) => {
-  const setReadID = useSetAtom(readIDAtom)
+export const AudioMessage = ({ id, role, blob }: Props) => {
   const frameRef = useRef<number>()
   const [pos, setPos] = useState(0)
-  const url = useMemo(() => URL.createObjectURL(blob), [blob])
-  const { audio, play, pause, audioRef, isPlaying } = useAudio(url, {
-    autoPlay: autoplay,
-    onPlay: () => {
-      setReadID(-1)
-    },
-    onEnded: () => {
-      setPos(0)
-    },
-  })
+  const { audioRef, play, pause, isPlaying, isCurrent } = useAudio(`${id}-${role}`, blob)
 
   useEffect(() => {
     const animate = () => {
       if (isPlaying) {
-        setPos(audioRef.current.currentTime)
+        setPos(audioRef.current?.currentTime ?? 0)
         frameRef.current = requestAnimationFrame(animate)
       }
     }
@@ -41,6 +30,12 @@ export const AudioMessage = ({ role, autoplay = false, blob }: Props) => {
       }
     }
   }, [isPlaying, audioRef])
+
+  useEffect(() => {
+    if (!isCurrent) {
+      setPos(0)
+    }
+  }, [isCurrent])
 
   const onClick = () => {
     if (isPlaying) {
@@ -55,7 +50,6 @@ export const AudioMessage = ({ role, autoplay = false, blob }: Props) => {
       onClick={onClick}
       className={clsx('rounded-lg px-3 py-1 text-sm cursor-pointer', role === 'user' ? 'bg-blue-500 text-white' : 'bg-muted')}
     >
-      {audio}
       <AudioVisualizer
         blob={blob}
         width={150}

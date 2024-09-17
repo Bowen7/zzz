@@ -1,14 +1,13 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 import { useAddConversation } from './conversation'
 import { useTTS } from './use-tts'
 import { responseSchema } from '@/lib/schema'
 import { db } from '@/lib/db'
-import { readIDAtom, selectedAtom } from '@/lib/atom'
+import { selectedAtom } from '@/lib/atom'
 
 export const useSubmit = () => {
   const selected = useAtomValue(selectedAtom)
-  const setReadID = useSetAtom(readIDAtom)
   const addConversation = useAddConversation(selected)
   const tts = useTTS()
   return useCallback(async (blob: Blob) => {
@@ -45,8 +44,7 @@ export const useSubmit = () => {
         assistantContent: content,
         assistantAudio: null,
       })
-      setReadID(id)
       await tts(id, content)
     }
-  }, [addConversation, selected, tts, setReadID])
+  }, [addConversation, selected, tts])
 }
