@@ -9,6 +9,8 @@ export const AudioReactContext = createContext<{
   pause: () => void
 }>({ currentId: '', isLoading: true, isPlaying: false, audioRef: { current: null }, play: () => {}, pause: () => {} })
 
+export const TRY_ID = 'try-audio'
+
 export const useAudioProvider = () => {
   const [currentId, setCurrentId] = useState('')
   const audioRef = useRef<HTMLAudioElement>(null)
@@ -24,6 +26,9 @@ export const useAudioProvider = () => {
   }, [isLoading])
 
   const play = useCallback((id?: string, blob?: Blob) => {
+    if (id === TRY_ID && currentId !== '') {
+      return
+    }
     if (id && id !== currentId) {
       setIsLoading(true)
       setCurrentId(id!)
@@ -55,6 +60,7 @@ export const useAudioProvider = () => {
       <audio
         className="hidden"
         ref={audioRef}
+        muted={currentId === TRY_ID}
         onCanPlayThrough={onCanPlayThrough}
         onPause={onPause}
       >
