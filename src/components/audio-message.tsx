@@ -9,6 +9,7 @@ type Props = {
   autoplay?: boolean
   blob: Blob
 }
+const devicePixelRatio = window.devicePixelRatio || 1
 export const AudioMessage = ({ id, role, blob }: Props) => {
   const frameRef = useRef<number>()
   const [pos, setPos] = useState(0)
@@ -52,8 +53,12 @@ export const AudioMessage = ({ id, role, blob }: Props) => {
     >
       <AudioVisualizer
         blob={blob}
-        width={150}
-        height={32}
+        width={150 * devicePixelRatio}
+        height={32 * devicePixelRatio}
+        style={{
+          width: '150px',
+          height: '32px',
+        }}
         barWidth={3}
         currentTime={pos}
         gap={2}
