@@ -1,49 +1,64 @@
-import { useAudioRecorder } from '@lobehub/tts/react'
-import { Microphone as MicIcon, MicrophoneSlash as MicSlashIcon } from '@phosphor-icons/react'
+import { Microphone as MicIcon, Square as SquareIcon, X as XIcon } from '@phosphor-icons/react'
 import clsx from 'clsx'
+import { useEffect, useRef, useState } from 'react'
+import { useAudioRecorder } from 'react-audio-voice-recorder'
 import { useLatest, useSubmit } from '@/hooks'
 import { Button } from '@/components/ui/button'
 
-const shapeClassName = 'w-8 h-8 rounded-full absolute inset-0 margin-auto blur'
 export const Mic = () => {
   const onSubmit = useSubmit()
+  const isWaitingToStart = useState(false)
+  const isWaitingToStop = useState(false)
   const onSubmitRef = useLatest(onSubmit)
-  const { isRecording, start, stop } = useAudioRecorder((blob: Blob) => {
-    onSubmitRef.current(blob)
-  })
+  const submittedBlobRef = useRef<Blob | null>(null)
 
-  const onRecord = async () => {
-    if (isRecording) {
-      stop()
-    } else {
-      start()
+  const {
+    startRecording,
+    stopRecording,
+    recordingBlob,
+    isRecording,
+  } = useAudioRecorder()
+
+  useEffect(() => {
+    if (recordingBlob && recordingBlob !== submittedBlobRef.current) {
+      onSubmitRef.current(recordingBlob)
+      submittedBlobRef.current = recordingBlob
     }
-  }
+  }, [recordingBlob, onSubmitRef])
+
   return (
-    <div className="h-24 flex items-center justify-center border-t">
+    <div className="h-24 flex items-center justify-center">
       <div className="inline-block relative">
-        <Button
-          className="rounded-full w-12 h-12 bg-transparent overflow-hidden relative"
-          variant="outline"
-          size="icon"
-          onClick={onRecord}
-        >
-          {isRecording && (
-            <>
-              <div className={clsx(shapeClassName, '-translate-x-3 animate-gradient-shape-1 bg-[#5500ff]')}></div>
-              <div className={clsx(shapeClassName, '-translate-x-3 translate-y-3 animate-gradient-shape-2 bg-[#00d5ff]')}></div>
-              <div className={clsx(shapeClassName, 'translate-x-3 translate-y-3 animate-gradient-shape-3 bg-[#ffe600]')}></div>
-              <div className={clsx(shapeClassName, 'translate-x-3 animate-gradient-shape-4 bg-[#0080ff]')}></div>
-            </>
-          )}
-          {isRecording
-            ? (
-                <MicIcon size={24} className="relative z-10 text-white" />
-              )
-            : (
-                <MicSlashIcon size={24} />
-              )}
-        </Button>
+        {!isRecording && (
+          <Button
+            className="rounded-full w-10 h-10"
+            variant="outline"
+            size="icon"
+            onClick={startRecording}
+          >
+            <MicIcon className="w-5 h-5" />
+          </Button>
+        )}
+        {isRecording && (
+          <div className="bg-muted w-48 rounded-full flex justify-between">
+            <Button
+              className="rounded-full w-10 h-10"
+              variant="destructive"
+              size="icon"
+              onClick={stopRecording}
+            >
+              <XIcon className="w-5 h-5" weight="bold" />
+            </Button>
+            <Button
+              className="rounded-full w-10 h-10"
+              variant="destructive"
+              size="icon"
+              onClick={stopRecording}
+            >
+              <SquareIcon weight="bold" className="w-5 h-5" />
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )

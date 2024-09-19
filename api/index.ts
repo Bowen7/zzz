@@ -14,12 +14,9 @@ app.get('/', async (c) => {
   return c.html(await MainHtml.fetch())
 })
 
-// eslint-disable-next-line unused-imports/no-unused-vars
-const route = app.route('/api', chat)
+app.route('/api', chat)
 
 export default app
-
-export type AppType = typeof route
 
 if (import.meta.env.PROD) {
   serve({ ...app, port: 4000 }, (info) => {
