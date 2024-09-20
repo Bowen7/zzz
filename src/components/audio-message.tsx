@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { useEffect, useRef, useState } from 'react'
 import { AudioVisualizer } from 'react-audio-visualize'
-import { useAudio } from '@/hooks'
+import { useAudio, useCanvasSize } from '@/hooks'
 
 type Props = {
   id: number
@@ -14,6 +14,8 @@ export const AudioMessage = ({ id, role, blob }: Props) => {
   const frameRef = useRef<number>()
   const [pos, setPos] = useState(0)
   const { audioRef, play, pause, isPlaying, isCurrent } = useAudio(`${id}-${role}`, blob)
+
+  const canvasProps = useCanvasSize(150, 32)
 
   useEffect(() => {
     const animate = () => {
@@ -49,21 +51,16 @@ export const AudioMessage = ({ id, role, blob }: Props) => {
   return (
     <div
       onClick={onClick}
-      className={clsx('rounded-lg px-3 py-1 text-sm cursor-pointer', role === 'user' ? 'bg-blue-500 text-white' : 'bg-muted')}
+      className={clsx('rounded-lg px-3 py-1 text-sm cursor-pointer', role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted')}
     >
       <AudioVisualizer
         blob={blob}
-        width={150 * devicePixelRatio}
-        height={32 * devicePixelRatio}
-        style={{
-          width: '150px',
-          height: '32px',
-        }}
+        {...canvasProps}
         barWidth={3}
         currentTime={pos}
         gap={2}
         barPlayedColor={role === 'user' ? '#fff' : '#09090b'}
-        barColor={role === 'user' ? '#bfdbfe' : '#a1a1aa'}
+        barColor={role === 'user' ? '#a1a1aa' : '#a1a1aa'}
       />
     </div>
   )
