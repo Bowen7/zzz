@@ -1,7 +1,7 @@
 import { Microphone as MicIcon, Square as SquareIcon, X as XIcon } from '@phosphor-icons/react'
 import { useEffect, useRef, useState } from 'react'
 import { useAudioRecorder } from 'react-audio-voice-recorder'
-import { LiveAudioVisualizer } from 'react-audio-visualize'
+import { LiveAudioVisualizer } from './live-audio-visualizer'
 import { useCanvasSize, useLatest, useSubmit } from '@/hooks'
 import { Button } from '@/components/ui/button'
 
@@ -14,7 +14,7 @@ export const Mic = () => {
   const submittedBlobRef = useRef<Blob | null>(null)
   const isCancelledRef = useRef(false)
 
-  const canvasProps = useCanvasSize(96, 24)
+  const canvasProps = useCanvasSize(96, 32)
 
   const onSubmitRef = useLatest(onSubmit)
 
@@ -72,7 +72,7 @@ export const Mic = () => {
           </Button>
         )}
         {isRecording && (
-          <div className="bg-muted w-48 rounded-full flex justify-between">
+          <div className="bg-muted w-48 rounded-full flex justify-between items-center">
             <Button
               className="rounded-full w-10 h-10"
               variant="destructive"
