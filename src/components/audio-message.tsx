@@ -9,7 +9,6 @@ type Props = {
   autoplay?: boolean
   blob: Blob
 }
-const devicePixelRatio = window.devicePixelRatio || 1
 export const AudioMessage = ({ id, role, blob }: Props) => {
   const frameRef = useRef<number>()
   const [pos, setPos] = useState(0)

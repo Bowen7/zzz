@@ -1,5 +1,4 @@
 import { Microphone as MicIcon, Square as SquareIcon, X as XIcon } from '@phosphor-icons/react'
-import clsx from 'clsx'
 import { useEffect, useRef, useState } from 'react'
 import { useAudioRecorder } from 'react-audio-voice-recorder'
 import { LiveAudioVisualizer } from 'react-audio-visualize'
