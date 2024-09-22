@@ -21,3 +21,9 @@ export type TempConversationModel = {
   assistantContent: string
   assistantAudio: ArrayBuffer | null
 }
+
+export type Config = {
+  voiceId: string
+  // minutes
+  timeToStartNewChat: number
+}

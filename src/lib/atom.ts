@@ -18,4 +18,6 @@ export const renamingAtom = atom({
   title: '',
 })
 
+export const isChatsLoadingAtom = atom(true)
+
 export const store = createStore()

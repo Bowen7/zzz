@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { useEffect, useRef, useState } from 'react'
 import { AudioVisualizer } from 'react-audio-visualize'
+import { Pause as PauseIcon, Play as PlayIcon } from '@phosphor-icons/react'
 import { useAudio, useCanvasSize } from '@/hooks'
 
 type Props = {
@@ -50,8 +51,9 @@ export const AudioMessage = ({ id, role, blob }: Props) => {
   return (
     <div
       onClick={onClick}
-      className={clsx('rounded-lg px-3 py-1 text-sm cursor-pointer', role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted')}
+      className={clsx('rounded-lg px-3 py-1 text-sm cursor-pointer flex space-x-2 items-center', role === 'user' ? 'bg-primary text-primary-foreground' : 'bg-muted')}
     >
+      {isPlaying ? <PauseIcon size={16} weight="bold" /> : <PlayIcon size={16} weight="bold" />}
       <AudioVisualizer
         blob={blob}
         {...canvasProps}

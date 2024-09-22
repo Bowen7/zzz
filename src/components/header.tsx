@@ -13,11 +13,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useChat, useCreateChat } from '@/hooks'
-import { deletingAtom, renamingAtom, selectedAtom, sidebarOpenedAtom } from '@/lib/atom'
+import { deletingAtom, isChatsLoadingAtom, renamingAtom, selectedAtom, sidebarOpenedAtom } from '@/lib/atom'
 
 export const Header = () => {
   const [settingOpen, setSettingOpen] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const isChatsLoading = useAtomValue(isChatsLoadingAtom)
   const setDeleting = useSetAtom(deletingAtom)
   const setRenaming = useSetAtom(renamingAtom)
   const selected = useAtomValue(selectedAtom)
@@ -49,7 +50,7 @@ export const Header = () => {
         <Button variant="ghost" size="icon" className="w-8 h-8 md:hidden" onClick={() => setDrawerOpen(true)}>
           <ListIcon className="h-4 w-4" />
         </Button>
-        <div className="font-medium">{title}</div>
+        <div className="font-medium">{!isChatsLoading && title}</div>
       </div>
       <div className="flex items-center space-x-1">
         <Button
